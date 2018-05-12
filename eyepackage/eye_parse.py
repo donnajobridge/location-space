@@ -22,8 +22,9 @@ def parse_eye_filename(pathobject):
 
 # returns master dataframe including eye file name, block, phase, subid
 # input list of subject strings, Path object pointing to eye files
-def get_eye_files(subs,eyepath):
-    substrings=[s+"*.asc" for s in subs]
+def get_eye_files(subids,eyepath):
+    print(subids)
+    substrings=[s+"*.asc" for s in subids]
     subinfo=[]
     for s in substrings:
         for filepathobj in eyepath.glob(s):
@@ -31,6 +32,7 @@ def get_eye_files(subs,eyepath):
             subinfo.append(subdict)
 
     masterdf=pd.DataFrame(subinfo).sort_values(by=["subject","phase","block"])
+    print(masterdf.head())
     masterdf=masterdf[["subject","phase","block","fname"]]
     masterdf.index=range(len(masterdf))
     return masterdf
