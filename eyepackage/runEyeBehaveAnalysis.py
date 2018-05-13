@@ -5,48 +5,64 @@ from eyepackage.eye_parse import *
 from eyepackage.behave_parse import *
 from eyepackage.behave_eye_converge import *
 
-# subids=["ec105","ec106","ec107","ec108"]
-subids=["ec107","ec108"]
-pathstring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.eye/'
-eyepath=Path(pathstring)
-
-masternames=get_eye_files(subids,eyepath)
-study_all=masternames[masternames['phase']=="a"]
-refresh_all=masternames[masternames['phase']=="b"]
-recog_all=masternames[masternames['phase']=="c"]
-
-for sub in subids:
-    refresh_sub=[]
-    refresh_sub=refresh_all[refresh_all['subject']==sub]
-
-    """ make everything below into a big subject loop"""
-    '''read in eye data'''
-    eye_events=parse_eye_line(refresh_sub,pathstring)
-    eyedf=events_to_df(eye_events)
-    eyearray=eventsdf_cleanup(eyedf)
-
-    '''read in behavior'''
-    behavestring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.behave/'
+def set_behavior_path(sub, behavestring):
     extra='recogarray.txt'
     behaveobj=[behavestring+sub+extra]
     behavepath=Path(behaveobj[0])
     behavepath.exists()
+    return behavepath
+
+def set_times_path(sub, behavestring):
+    timesarrayextra='refreshtimes.txt'
+    timesarrayobj=[behavestring+sub+timesarrayextra]
+    timesarray_path=Path(timesarrayobj[0])
+    timesarray_path.exists()
+    return timesarray_path
+
+
+def get_refresh_all(subids,pathstring):
+
+    eyepath=Path(pathstring)
+    if not eyepath.exists():
+        print("can't find path, check connection!!")
+        quit()
+
+    #TODO: get the other files later
+    masternames=get_eye_files(subids,eyepath)
+    # study_all=masternames[masternames['phase']=="a"]
+    refresh_all=masternames[masternames['phase']=="b"]
+    # recog_all=masternames[masternames['phase']=="c"]
+    return refresh_all
+
+def load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres=True):
+    refresh_sub=[]
+    refresh_sub=refresh_all[refresh_all['subject']==sub]
+    print(sub)
+    eyearray = read_in_eye_data(refresh_sub,pathstring)
+    if not len(eyearray):
+        print('eyearray is empty!')
+
+
+    behavepath = set_behavior_path(sub, behavestring)
+    timesarray_path = set_times_path(sub, behavestring)
+
     behavearray=read_behave_file(behavepath)
-
-    subdict_change_coords=change_behave_coords(subids)
+    print('len(behavearray)', len(behavearray))
     #apply coordinate change to behavioral data if True in subdict
-    if subdict_change_coords[sub]==True:
+    if is_pres:
         behavearray=apply_adjust_pres_coords(behavearray)
+        timesarray=read_times_file_pres(timesarray_path)
+    else:
+        timesarray=read_times_file_mat(timesarray_path)
 
-    '''read in object onset times'''
-    reftimesextra='refreshtimes.txt'
-    reftimesobj=[behavestring+sub+reftimesextra]
-    reftimespath=Path(reftimesobj[0])
-    reftimespath.exists()
-    reftimes=read_times_file(reftimespath)
+    print('len(timesarray)', len(timesarray))
 
+
+    return eyearray,behavearray,timesarray
+
+def preprocess_subject_dfs(sub, eyearray,behavearray,timesarray):
     ''' link behavior and eye data'''
-    eyebehave=eye_behave_combo(eyearray,behavearray,reftimes)
+    eyebehave=eye_behave_combo(eyearray,behavearray,timesarray)
 
     #adjust timing to object onset
     eyebehave=remove_baseline_eye(eyebehave)
@@ -79,3 +95,20 @@ for sub in subids:
     # put that command in behave_eye_converge
     fname=sub+'eyebehave.csv'
     subcleandf.to_csv(fname)
+
+def run_all():
+    # subids=["ec105","ec106","ec107","ec108"]
+    subids=["ec105","ec106","ec107","ec108"]
+    matlab_subs = ["ec105", "ec106"]
+    pathstring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.eye/'
+    behavestring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.behave/'
+
+
+    refresh_all = get_refresh_all(subids,pathstring)
+
+    for sub in subids:
+        is_pres = (sub not in matlab_subs)
+        print('running', sub, 'using presentation', is_pres)
+        output=load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres)
+        preprocess_subject_dfs(sub, *output)
+        print(sub, 'is done!')

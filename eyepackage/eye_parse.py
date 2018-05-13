@@ -20,9 +20,11 @@ def parse_eye_filename(pathobject):
     return subdict
 
 
-# returns master dataframe including eye file name, block, phase, subid
-# input list of subject strings, Path object pointing to eye files
+
 def get_eye_files(subids,eyepath):
+    """ returns master dataframe including eye file name, block, phase, subid
+    input list of subject strings, Path object pointing to eye files
+    """
     print(subids)
     substrings=[s+"*.asc" for s in subids]
     subinfo=[]
@@ -51,8 +53,7 @@ def parse_eye_events_to_intline(line,extrainfo):
 
 
 def parse_eye_line(phase_sub,pathstring):
-    """
-    parses each line of eye file for a given phase_sub
+    """ parses each line of eye file for a given phase_sub
     input one phase type list of files for a subs
     and the path to the file (in form of a string)
     outputs dataframe with all events in table
@@ -107,3 +108,9 @@ def eventsdf_cleanup(eye_events_df):
     del eyedf_clean['eye']
 
     return eyedf_clean
+
+def read_in_eye_data(refresh_sub,pathstring):
+    eye_events=parse_eye_line(refresh_sub,pathstring)
+    eyedf=events_to_df(eye_events)
+    eyearray=eventsdf_cleanup(eyedf)
+    return eyearray

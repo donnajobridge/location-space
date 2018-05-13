@@ -8,7 +8,7 @@ def eye_behave_combo(eyearray,behavearray,timesarray):
 
     eyecols=eyebehave.columns.tolist()
     behavecols=['loc1x','loc1y','loc2x','loc2y','loc3x','loc3y','recog loc','same/diff','cond']
-    allcols=eyecols+behavecols+['objonset']
+    allcols=eyecols+behavecols+['objonset','trialend']
     eyebehave=eyebehave.reindex(columns=allcols)
 
     for trial,col in enumerate(behavearray):
@@ -23,6 +23,7 @@ def eye_behave_combo(eyearray,behavearray,timesarray):
         objonsetmask=timesarray.index==trial
         onsettrial=timesarray.loc[objonsetmask]
         eyetrial.loc[eyetrialevents,'objonset']=onsettrial.iloc[0]['objonset']
+        eyetrial.loc[eyetrialevents,'trialend']=onsettrial.iloc[0]['trialend']
 
         eyebehave.loc[eyetrialevents]=eyetrial
     return eyebehave
@@ -111,24 +112,18 @@ def adjust_event_after_blink(new_previous_events):
     new_post_events=[]
     new_events=new_previous_events.copy()
     flag=False
-    for ind in new_events:
-        current_event=ind
-        update_event=ind
-        if flag==True and trial==current_event['trialnum']:
-            if current_event['event']=='ESACC':
-                update_event['event']='blink'
-            elif current_event['event']=='EFIX':
+    for current_event in new_events:
+        event_type=current_event['event']
+        current_trial=current_event['trialnum']
+        if flag==True and previous_trial==current_trial:
+            if event_type=='ESACC':
+                event_type='blink'
+            elif event_type=='EFIX':
                 if current_event['duration']<100:
-                    update_event['event']='blink'
-
-        new_post_events.append(update_event)
-
-        if update_event['event']=='EBLINK':
-            flag=True
-            trial=update_event['trialnum']
-        else:
-            flag=False
-            trial=0
+                    event_type='blink'
+        new_post_events.append(current_event)
+        flag=(event_type=='EBLINK')
+        previous_trial=current_trial
     return new_post_events
 
 def eyedict_backto_df(new_post_events):

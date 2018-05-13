@@ -13,18 +13,6 @@ def read_behave_file(filepath):
     behavearray=behavearray[behavearray.columns[tmpmask]]
     return behavearray
 
-def change_behave_coords(subids):
-    """create dict that assigns boolean values to indicate if
-    behavioral coords should be changed to match eye coords"""
-    subdict_change_coords={}
-    for index,s in enumerate(subids):
-        subdict_change_coords[s]=False
-        if index<2:
-            continue
-        subdict_change_coords[s]=True
-            
-    return subdict_change_coords
-
 
 def adjust_pres_coords(array,x,y,xmax=1920/2,ymax=1080/2):
     """adjustment for behavioral coords to match
@@ -47,9 +35,20 @@ def apply_adjust_pres_coords(behavearray):
         behavearray[loc]=newlocs[loc]
     return behavearray
 
-def read_times_file(timespath):
+def read_times_file_pres(timespath):
     timecolnames=['global trial start','objonset','trialend']
-    timesdf=pd.read_table(timespath,header=None,names=timecolnames)
+    timesdf=pd.read_table(timespath,header=None, names=timecolnames, index_col=False)
+    print(timesdf.head())
     del timesdf['global trial start']
-    del timesdf['trialend']
+    return timesdf
+
+def read_times_file_mat(timespath):
+    print('running',timespath)
+    timecolnames=['tmp1', 'tmp2', 'objonset','tmp3', 'tmp4']
+    timesdf=pd.read_table(timespath,header=None,names=timecolnames, index_col=False)
+    print(timesdf.head())
+    to_delete=['tmp1', 'tmp2', 'tmp3', 'tmp4']
+    for tmp in to_delete:
+        del timesdf[tmp]
+    timesdf['trialend']=np.nan
     return timesdf
