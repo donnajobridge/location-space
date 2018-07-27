@@ -63,11 +63,11 @@ def parse_eye_line(phase_sub,pathstring):
     blocks=phase_sub.block
     fnames=phase_sub.fname
     subjects=phase_sub.subject
+    trialnum=0
     for block,fname,subject in zip(blocks,fnames,subjects):
         path_file=pathstring+fname
         p=Path(path_file)
         with p.open() as f:
-            trialnum=0
             for line in f:
                 if "START" in line:
                     trialnum=trialnum+1

@@ -62,7 +62,7 @@ def load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres=Tr
 
 def preprocess_subject_dfs(sub, eyearray,behavearray,timesarray):
     ''' link behavior and eye data'''
-    eyebehave=eye_behave_combo(eyearray,behavearray,timesarray)
+    eyebehave=eye_behave_combo(eyearray,behavearray,timesarray,'refresh order')
 
     #adjust timing to object onset
     eyebehave=remove_baseline_eye(eyebehave)

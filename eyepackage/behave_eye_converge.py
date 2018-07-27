@@ -3,22 +3,22 @@ import numpy as np
 import pandas as pd
 
 
-def eye_behave_combo(eyearray,behavearray,timesarray):
+def eye_behave_combo(eyearray,behavearray,timesarray, order_col):
     eyebehave=eyearray.copy()
 
     eyecols=eyebehave.columns.tolist()
     behavecols=['loc1x','loc1y','loc2x','loc2y','loc3x','loc3y','recog loc','same/diff','cond']
     allcols=eyecols+behavecols+['objonset','trialend']
     eyebehave=eyebehave.reindex(columns=allcols)
+    behavearray.sort_values(by=[order_col], inplace=True)
+    behavearray.set_index(order_col, inplace=True)
 
-    for trial,col in enumerate(behavearray):
+    for trial in range(0,behavearray.shape[0]):
         eyetrialevents=(eyebehave['trialnum']==trial+1)
         eyetrial=eyebehave.loc[eyetrialevents]
 
-        behtrialevents=(behavearray['refresh order']==trial+1)
-        behtrial=behavearray.loc[behtrialevents]
         for col in behavecols:
-            eyetrial.loc[eyetrialevents,col]=behtrial.iloc[0][col]
+            eyetrial.loc[eyetrialevents,col]=behavearray.loc[trial+1,col]
 
         objonsetmask=timesarray.index==trial
         onsettrial=timesarray.loc[objonsetmask]
