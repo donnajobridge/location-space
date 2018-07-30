@@ -12,13 +12,12 @@ def parse_eye_filename(pathobject):
         other=other.replace("r","")
     try:
         block=int(other[0])
-        phase=other[1]
+        phase_letter=other[1]
     except:
         block=int(other[1])
-        phase=other[0]
-    subdict={"subject":subject, "phase":phase,"block":block, "fname":fname}
+        phase_letter=other[0]
+    subdict={"subject":subject, "phase_letter":phase_letter,"block":block, "fname":fname}
     return subdict
-
 
 
 def get_eye_files(subids,eyepath):
@@ -33,9 +32,9 @@ def get_eye_files(subids,eyepath):
             subdict=parse_eye_filename(filepathobj)
             subinfo.append(subdict)
 
-    masterdf=pd.DataFrame(subinfo).sort_values(by=["subject","phase","block"])
+    masterdf=pd.DataFrame(subinfo).sort_values(by=["subject","phase_letter","block"])
     print(masterdf.head())
-    masterdf=masterdf[["subject","phase","block","fname"]]
+    masterdf=masterdf[["subject","phase_letter","block","fname"]]
     masterdf.index=range(len(masterdf))
     return masterdf
 
@@ -52,31 +51,40 @@ def parse_eye_events_to_intline(line,extrainfo):
     return newline
 
 
-def parse_eye_line(phase_sub,pathstring):
-    """ parses each line of eye file for a given phase_sub
+def parse_eye_line(eye_phase_sub,eyestring, phase):
+    """ parses each line of eye file for a given eye_phase_sub
     input one phase type list of files for a subs
     and the path to the file (in form of a string)
     outputs dataframe with all events in table
     """
     etypes=('ESACC','EFIX','EBLINK')
     events=[]
-    blocks=phase_sub.block
-    fnames=phase_sub.fname
-    subjects=phase_sub.subject
+    blocks=eye_phase_sub.block
+    fnames=eye_phase_sub.fname
+    subjects=eye_phase_sub.subject
     trialnum=0
+    print(eyestring)
     for block,fname,subject in zip(blocks,fnames,subjects):
-        path_file=pathstring+fname
+        path_file=eyestring+fname
+        startcount=0
         p=Path(path_file)
         with p.open() as f:
             for line in f:
                 if "START" in line:
-                    trialnum=trialnum+1
+                    startcount=startcount+1
+                    if phase=='study' and startcount==1:
+                        trialnum=trialnum
+                    else:
+                        trialnum=trialnum+1
                     startline=line.split()
                     starttime=int(startline[1])
                 if any(e in line for e in etypes):
                     extrainfo=[starttime,trialnum,block,subject]
                     newline=parse_eye_events_to_intline(line,extrainfo)
+                    if phase=='study' and startcount==1:
+                        continue
                     events.append(newline)
+            print(trialnum, block, startcount)
     return events
 
 def events_to_df(events):
@@ -98,6 +106,13 @@ def eventsdf_cleanup(eye_events_df):
     eyedf_clean=eye_events_df.copy()
 
     eyedf_clean['start']=eyedf_clean['start']-eyedf_clean['trialstart']
+def eventsdf_cleanup(eye_events_df):
+    """adjust trial start time, remove irrelevant values in fixation rows,
+    and then delete excess columns"""
+
+    eyedf_clean=eye_events_df.copy()
+
+    eyedf_clean['start']=eyedf_clean['start']-eyedf_clean['trialstart']
     eyedf_clean['end']=eyedf_clean['end']-eyedf_clean['trialstart']
 
     efix_mask = (eyedf_clean["event"]=="EFIX")
@@ -109,8 +124,8 @@ def eventsdf_cleanup(eye_events_df):
 
     return eyedf_clean
 
-def read_in_eye_data(refresh_sub,pathstring):
-    eye_events=parse_eye_line(refresh_sub,pathstring)
+def read_in_eye_data(eye_phase_sub,eyestring,phase):
+    eye_events=parse_eye_line(eye_phase_sub,eyestring,phase)
     eyedf=events_to_df(eye_events)
     eyearray=eventsdf_cleanup(eyedf)
     return eyearray

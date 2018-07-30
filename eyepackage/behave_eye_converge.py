@@ -3,15 +3,17 @@ import numpy as np
 import pandas as pd
 
 
-def eye_behave_combo(eyearray,behavearray,timesarray, order_col):
+def eye_behave_combo(eyearray,behavearray,timesarray,phase):
     eyebehave=eyearray.copy()
 
     eyecols=eyebehave.columns.tolist()
-    behavecols=['loc1x','loc1y','loc2x','loc2y','loc3x','loc3y','recog loc','same/diff','cond']
+    behavecols=['loc1x','loc1y','loc2x','loc2y','loc3x','loc3y','recog loc',
+    'same/diff','cond', 'study order', 'refresh order', 'recog order']
     allcols=eyecols+behavecols+['objonset','trialend']
     eyebehave=eyebehave.reindex(columns=allcols)
+    order_col=phase+' order'
     behavearray.sort_values(by=[order_col], inplace=True)
-    behavearray.set_index(order_col, inplace=True)
+    behavearray.set_index(order_col, drop=False, inplace=True)
 
     for trial in range(0,behavearray.shape[0]):
         eyetrialevents=(eyebehave['trialnum']==trial+1)
@@ -131,4 +133,5 @@ def eyedict_backto_df(new_post_events):
     old_blink_mask=corrected_eyedf['event']!='EBLINK'
     corrected_eyedf=corrected_eyedf[old_blink_mask]
     corrected_eyedf.sort_values(['block','trialnum','start'])
+    corrected_eyedf=corrected_eyedf.reset_index(drop=True)
     return corrected_eyedf

@@ -12,39 +12,36 @@ def set_behavior_path(sub, behavestring):
     behavepath.exists()
     return behavepath
 
-def set_times_path(sub, behavestring):
-    timesarrayextra='refreshtimes.txt'
+def set_times_path(sub, behavestring, phase):
+    timesarrayextra=phase+'times.txt'
     timesarrayobj=[behavestring+sub+timesarrayextra]
     timesarray_path=Path(timesarrayobj[0])
     timesarray_path.exists()
     return timesarray_path
 
 
-def get_refresh_all(subids,pathstring):
-
-    eyepath=Path(pathstring)
+def get_all_eye_files(subids,eyestring,phase):
+    eyepath=Path(eyestring)
     if not eyepath.exists():
         print("can't find path, check connection!!")
         quit()
-
-    #TODO: get the other files later
+    phase_letter_dict={'study':'a', 'refresh':'b', 'recog':'c'}
     masternames=get_eye_files(subids,eyepath)
-    # study_all=masternames[masternames['phase']=="a"]
-    refresh_all=masternames[masternames['phase']=="b"]
-    # recog_all=masternames[masternames['phase']=="c"]
-    return refresh_all
+    phase_eye_files=masternames[masternames['phase_letter']==phase_letter_dict[phase]]
+    print(phase_eye_files)
+    return phase_eye_files
 
-def load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres=True):
-    refresh_sub=[]
-    refresh_sub=refresh_all[refresh_all['subject']==sub]
+def load_data_for_subject(sub, phase_eye_files, phase, eyestring, behavestring, is_pres=True):
+    eye_phase_sub=[]
+    eye_phase_sub=phase_eye_files[phase_eye_files['subject']==sub]
     print(sub)
-    eyearray = read_in_eye_data(refresh_sub,pathstring)
+    eyearray = read_in_eye_data(eye_phase_sub,eyestring,phase)
     if not len(eyearray):
         print('eyearray is empty!')
 
 
     behavepath = set_behavior_path(sub, behavestring)
-    timesarray_path = set_times_path(sub, behavestring)
+    timesarray_path = set_times_path(sub, behavestring, phase)
 
     behavearray=read_behave_file(behavepath)
     print('len(behavearray)', len(behavearray))
@@ -53,16 +50,15 @@ def load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres=Tr
         behavearray=apply_adjust_pres_coords(behavearray)
         timesarray=read_times_file_pres(timesarray_path)
     else:
-        timesarray=read_times_file_mat(timesarray_path)
+        timesarray=read_times_file_mat(timesarray_path,phase)
 
     print('len(timesarray)', len(timesarray))
 
-
     return eyearray,behavearray,timesarray
 
-def preprocess_subject_dfs(sub, eyearray,behavearray,timesarray):
+def preprocess_subject_dfs(sub,phase,eyearray,behavearray,timesarray):
     ''' link behavior and eye data'''
-    eyebehave=eye_behave_combo(eyearray,behavearray,timesarray,'refresh order')
+    eyebehave=eye_behave_combo(eyearray,behavearray,timesarray,phase)
 
     #adjust timing to object onset
     eyebehave=remove_baseline_eye(eyebehave)
@@ -93,22 +89,24 @@ def preprocess_subject_dfs(sub, eyearray,behavearray,timesarray):
 
     '''save subject specific file to csv'''
     # put that command in behave_eye_converge
-    fname=sub+'eyebehave.csv'
+    fname='data/'+sub+phase+'eyebehave.csv'
     subcleandf.to_csv(fname)
 
 def run_all():
-    # subids=["ec105","ec106","ec107","ec108"]
+    # subids=["ec108"]
     subids=["ec105","ec106","ec107","ec108"]
     matlab_subs = ["ec105", "ec106"]
     pathstring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.eye/'
     behavestring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.behave/'
 
 
-    refresh_all = get_refresh_all(subids,pathstring)
 
-    for sub in subids:
-        is_pres = (sub not in matlab_subs)
-        print('running', sub, 'using presentation', is_pres)
-        output=load_data_for_subject(sub, refresh_all, pathstring, behavestring, is_pres)
-        preprocess_subject_dfs(sub, *output)
-        print(sub, 'is done!')
+    for phase in ['study', 'refresh', 'recog']:
+        all_phase = get_all_eye_files(subids,pathstring,phase)
+
+        for sub in subids:
+            is_pres = (sub not in matlab_subs)
+            print('running', sub, 'using presentation', is_pres)
+            output=load_data_for_subject(sub, all_phase, phase, pathstring, behavestring, is_pres)
+            preprocess_subject_dfs(sub, phase, *output)
+            print(sub, 'is done!')
