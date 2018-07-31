@@ -92,9 +92,11 @@ def preprocess_subject_dfs(sub,phase,eyearray,behavearray,timesarray):
     fname='data/'+sub+phase+'eyebehave.csv'
     subcleandf.to_csv(fname)
 
+    bname='data/'+sub+'behave.csv'
+    behavearray.to_csv(bname)
 def run_all():
-    # subids=["ec108"]
-    subids=["ec105","ec106","ec107","ec108"]
+    subids=["ec109"]
+    # subids=["ec105","ec106","ec107","ec108","ec109"]
     matlab_subs = ["ec105", "ec106"]
     pathstring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.eye/'
     behavestring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.behave/'
@@ -102,6 +104,7 @@ def run_all():
 
 
     for phase in ['study', 'refresh', 'recog']:
+
         all_phase = get_all_eye_files(subids,pathstring,phase)
 
         for sub in subids:
