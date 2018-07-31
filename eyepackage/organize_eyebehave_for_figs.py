@@ -1,19 +1,13 @@
-import seaborn as sns
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import rcParams
 
-
-rcParams.update({'figure.autolayout': True})
 
 #read in data
 sublist=['ec105', 'ec106', 'ec107', 'ec108']
 phase='refresh'
 roi_list=['loc1start', 'loc2start', 'loc3start', 'screen']
 
-def read_data_for_figs(sublist, phase):
-
+def read_eye_data(sublist, phase):
     all=pd.DataFrame()
     for sub in sublist:
         file='data/' + sub + phase + 'eyebehave.csv'
@@ -30,7 +24,7 @@ def get_fixations(all):
     all_fix=all_fix[all_fix['recog loc']>0]
     return all_fix
 
-def get_prop_tidy_prop_viewing(fix, roi_list):
+def get_tidy_prop_viewing(fix, roi_list):
     roi_prop_dict={}
     roi_prop_list=[]
     for row, ldf in fix.groupby(['sub', 'trialnum', 'cond', 'recog loc']):
@@ -45,3 +39,26 @@ def get_prop_tidy_prop_viewing(fix, roi_list):
             roi_prop_list.append(roi_prop_dict)
     roi_prop_tidy=pd.DataFrame(roi_prop_list)
     return roi_prop_tidy
+
+def read_behave_data(sublist):
+    all_behave=pd.DataFrame()
+    for sub in sublist:
+        file='data/' + sub + 'behave.csv'
+        behave=pd.read_csv(file, index_col=0)
+        behave['sub']=sub
+        all_behave=pd.concat([all_behave,behave])
+    return all_behave
+
+def get_tidy_prop_recog(all_behave):
+    all_behave=all_behave[all_behave['recog loc']!=-1]
+    locs=[1, 2, 3]
+    recog_prop_dict={}
+    recog_prop_list=[]
+    for row, ldf in all_behave.groupby(['sub', 'cond']):
+        for loc in locs:
+            loc_ldf = ldf[ldf['recog loc']==loc]
+            loc_prop = loc_ldf['recog loc'].count()/ldf.shape[0]
+            recog_prop_dict = {'sub':row[0], 'cond':row[1], 'recog loc':loc, 'loc_prop':loc_prop}
+            recog_prop_list.append(recog_prop_dict)
+    recog_prop_tidy=pd.DataFrame(recog_prop_list)
+    return recog_prop_tidy
