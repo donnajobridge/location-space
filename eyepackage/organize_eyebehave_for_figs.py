@@ -3,9 +3,6 @@ import numpy as np
 
 
 #read in data
-sublist=['ec105', 'ec106', 'ec107', 'ec108']
-phase='refresh'
-roi_list=['loc1start', 'loc2start', 'loc3start', 'screen']
 
 def read_eye_data(sublist, phase):
     all=pd.DataFrame()
