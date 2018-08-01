@@ -21,21 +21,33 @@ def get_fixations(all):
     all_fix=all_fix[all_fix['recog loc']>0]
     return all_fix
 
-def get_tidy_prop_viewing(fix, roi_list):
+def get_tidy_fix(fix, roi_list):
     roi_prop_dict={}
     roi_prop_list=[]
     for row, ldf in fix.groupby(['sub', 'trialnum', 'cond', 'recog loc']):
         roi_sum = ldf['duration'].sum()
-        for roi in rois:
+        for roi in roi_list:
             loc_ldf = ldf[ldf['startloc']==roi]
             loc_dur = loc_ldf['duration'].sum()
             loc_prop = loc_dur/roi_sum
-            roi_prop_dict = {'sub':ldf['sub'].iloc[0], 'cond':ldf['cond'].iloc[0], 'trial':ldf['trialnum'].iloc[0],
-                             'recog loc':ldf['recog loc'].iloc[0],
-                             'all_roi_sum':roi_sum, 'roi':roi, 'roi_sum':loc_dur, 'roi_prop':loc_prop}
+            roi_prop_dict = {'sub':ldf['sub'].iloc[0], 'cond':ldf['cond'].iloc[0], 'trial':ldf['trialnum'].iloc[0], 'recog loc':ldf['recog loc'].iloc[0],'all_roi_dur':roi_sum, 'roi':roi, 'roi_dur':loc_dur,'roi_prop':loc_prop, 'roi_num':loc_ldf.shape[0]}
             roi_prop_list.append(roi_prop_dict)
-    roi_prop_tidy=pd.DataFrame(roi_prop_list)
-    return roi_prop_tidy
+    roi_fix_tidy=pd.DataFrame(roi_prop_list)
+    return roi_fix_tidy
+
+
+def get_tidy_fix_sub(roi_fix_tidy):
+    sub_fix_list = []
+    for row, ldf in roi_fix_tidy.groupby(['sub', 'cond', 'roi', 'recog loc']):
+        roi_num_mean=ldf['roi_num'].mean()
+        roi_dur_mean=ldf['roi_dur'].mean()
+        roi_prop_mean=ldf['roi_prop'].mean()
+        sub_fix_dict = {'sub':row[0], 'cond':row[1], 'roi':row[2], 'recog loc':row[3],
+                       'roi_num_mean':roi_num_mean, 'roi_dur_mean':roi_dur_mean, 'roi_prop_mean':roi_prop_mean}
+        sub_fix_list.append(sub_fix_dict)
+    sub_fix_tidy=pd.DataFrame(sub_fix_list)
+    return sub_fix_tidy
+
 
 def read_behave_data(sublist):
     all_behave=pd.DataFrame()
