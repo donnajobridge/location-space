@@ -67,8 +67,8 @@ def edit_behave_variables(recog_prop_tidy):
     return recog_prop_tidy
 
 def make_behave_figs(behave_for_figs):
-    for fig_type, myplot in [('bar', sns.barplot), ('vio', sns.violinplot)]:
-        ax=sns.barplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
+    for fig_type, myplot in [('bar', sns.barplot), ('swarm', sns.swarmplot)]:
+        ax=myplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
         data=behave_for_figs, palette="colorblind")
         ax.set_xlabel('Location Selection', fontsize=20)
         ax.tick_params(labelsize=16)
