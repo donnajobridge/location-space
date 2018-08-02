@@ -22,18 +22,14 @@ def run_all_figs():
         sub_fix_tidy['phase'] = phase
         fix_for_figs = edit_eye_variables(sub_fix_tidy)
         phase_data_dict[phase] = fix_for_figs
-
-    for phase in phaselist:
         fig_data = phase_data_dict[phase]
-        make_bar_ave_eye(fig_data, phase)
-        make_vio_ave_eye(fig_data, phase)
-        # todo: add eye fig functions
-
+        make_ave_eye_figs(fig_data, phase)
+    # for phase in phaselist:
 
 
     all_behave = read_behave_data(sublist)
     recog_prop_tidy = get_tidy_prop_recog(all_behave)
-
     behave_for_figs = edit_behave_variables(recog_prop_tidy)
-    make_bar_behave(behave_for_figs)
-    make_vio_behave(behave_for_figs)
+    make_behave_figs(behave_for_figs)
+
+# to do: add in function for plotting eye movements across phases

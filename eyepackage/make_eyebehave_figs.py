@@ -30,37 +30,25 @@ def edit_eye_variables(sub_fix_all_phase):
     sub_fix_all_phase.rename(columns = {'recog loc':'Recognition Location'}, inplace=True)
     return sub_fix_all_phase
 
-def make_bar_ave_eye(fix_for_figs, phase):
+def make_ave_eye_figs(fix_for_figs, phase):
     for cond in ['Mismatch', 'Match']:
         data = fix_for_figs[(fix_for_figs['phase']==phase) &
         (fix_for_figs['cond']==cond)]
         for measure in ['Number of Fixations', 'Fixation Duration', 'Proportion of Viewing']:
-            bar=sns.barplot(x='roi', y=measure, hue='Recognition Location', data=data, palette="colorblind")
-            bar.set_xlabel('Region of Interest', fontsize=20)
-            bar.tick_params(labelsize=16)
-            plt.legend(fontsize=12)
-            plt.gca().legend().set_title('')
-            bar.set_ylabel('Mean ' + measure, fontsize=20)
-            plt.title(measure, fontsize=30)
-            barfig=bar.get_figure()
-            barfig.savefig('figs/ls_fix_bar_'+phase+cond+measure+'.png')
-            plt.clf()
+            for fig_type, myplot in [('vio', sns.violinplot), ('bar', sns.barplot)]:
+                ax=myplot(x='roi', y=measure, hue='Recognition Location',
+                data=data, palette="colorblind")
+                ax.set_xlabel('Region of Interest', fontsize=20)
+                ax.tick_params(labelsize=16)
+                plt.legend(fontsize=12)
+                plt.gca().legend().set_title('')
+                ax.set_ylabel('Mean ' + measure, fontsize=20)
+                plt.title(measure, fontsize=30)
+                fig=ax.get_figure()
+                fig.savefig('figs/ls_fix_'+fig_type+phase+cond+measure+'.png')
+                plt.clf()
 
-def make_vio_ave_eye(fix_for_figs, phase):
-    for cond in ['Mismatch', 'Match']:
-        data = fix_for_figs[(fix_for_figs['phase']==phase) &
-        (fix_for_figs['cond']==cond)]
-        for measure in ['Number of Fixations', 'Fixation Duration', 'Proportion of Viewing']:
-            vio=sns.violinplot(x='roi', y=measure, hue='Recognition Location', data=data, palette="colorblind")
-            vio.set_xlabel('Region of Interest', fontsize=20)
-            vio.tick_params(labelsize=16)
-            plt.legend(fontsize=12)
-            plt.gca().legend().set_title('')
-            vio.set_ylabel('Mean ' + measure, fontsize=20)
-            plt.title(measure, fontsize=30)
-            viofig=vio.get_figure()
-            viofig.savefig('figs/ls_fix_vio_'+phase+cond+measure+'.png')
-            plt.clf()
+
 
 def edit_behave_variables(recog_prop_tidy):
     cond_list = [1,2]
@@ -78,28 +66,16 @@ def edit_behave_variables(recog_prop_tidy):
     recog_prop_tidy.rename(columns = col_dict, inplace=True)
     return recog_prop_tidy
 
-def make_bar_behave(behave_for_figs):
-    bar=sns.barplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
-    data=behave_for_figs, palette="colorblind")
-    bar.set_xlabel('Location Selection', fontsize=20)
-    bar.tick_params(labelsize=16)
-    plt.legend(fontsize=12)
-    plt.gca().legend().set_title('')
-    bar.set_ylabel('Proportion of Responses', fontsize=20)
-    plt.title('Recognition Performance', fontsize=30)
-    barfig=bar.get_figure()
-    barfig.savefig('figs/ls_behave_bar_.png')
-    plt.clf()
-
-def make_vio_behave(behave_for_figs):
-    vio=sns.violinplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
-    data=behave_for_figs, split=True, inner='stick',  palette="colorblind")
-    vio.set_xlabel('Location Selection', fontsize=20)
-    vio.tick_params(labelsize=16)
-    plt.legend(fontsize=12)
-    plt.gca().legend().set_title('')
-    vio.set_ylabel('Proportion of Responses', fontsize=20)
-    plt.title('Recognition Performance', fontsize=30)
-    viofig=vio.get_figure()
-    viofig.savefig('figs/ls_behave_vio_.png')
-    plt.clf()
+def make_behave_figs(behave_for_figs):
+    for fig_type, myplot in [('bar', sns.barplot), ('vio', sns.violinplot)]:
+        ax=sns.barplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
+        data=behave_for_figs, palette="colorblind")
+        ax.set_xlabel('Location Selection', fontsize=20)
+        ax.tick_params(labelsize=16)
+        plt.legend(fontsize=12)
+        plt.gca().legend().set_title('')
+        ax.set_ylabel('Proportion of Responses', fontsize=20)
+        plt.title('Recognition Performance', fontsize=30)
+        fig=ax.get_figure()
+        fig.savefig('figs/ls_behave_'+fig_type+'_.png')
+        plt.clf()
