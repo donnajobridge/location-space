@@ -36,9 +36,9 @@ apple2 = apple[::-1]
 
 fig = plt.figure(figsize=(10, 4))
 
-ax1 = fig.add_subplot(1,2,1, aspect=1080/1920)
-ax2 = fig.add_subplot(1,2,2, aspect=1080/1920)
-# ax3 = fig.add_subplot(1,3,3, aspect=1080/1920)
+ax1 = fig.add_subplot(1,3,1, aspect=1080/1920)
+ax2 = fig.add_subplot(1,3,2, aspect=1080/1920)
+ax3 = fig.add_subplot(1,3,3, aspect=1080/1920)
 
 ax1.set_xlim(0, 1920)
 ax1.set_ylim(0, 1080)
@@ -52,11 +52,11 @@ ax2.set_title('Update', fontsize=20)
 ax2.axes.get_xaxis().set_visible(False)
 ax2.axes.get_yaxis().set_visible(False)
 
-# ax3.set_xlim(0, 1920)
-# ax3.set_ylim(0, 1080)
-# ax3.set_title('Final Test')
-# ax3.axes.get_xaxis().set_visible(False)
-# ax3.axes.get_yaxis().set_visible(False)
+ax3.set_xlim(0, 1920)
+ax3.set_ylim(0, 1080)
+ax3.set_title('Final Test', fontsize=20)
+ax3.axes.get_xaxis().set_visible(False)
+ax3.axes.get_yaxis().set_visible(False)
 
 offset = 180
 
@@ -80,7 +80,7 @@ loc3_coords = coords_to_borders(refresh, loc=3, offset=offset)
 # plot grid
 ax1.imshow(grid, extent = [0, 1920, 0, 1080])
 ax2.imshow(grid, extent = [0, 1920, 0, 1080])
-# ax3.imshow(grid, extent = [0, 1920, 0, 1080])
+ax3.imshow(grid, extent = [0, 1920, 0, 1080])
 
 #plot apple
 # study
@@ -89,9 +89,9 @@ ax1.imshow(apple2, extent = loc1_coords)
 ax2.imshow(apple2, extent = loc2_coords )
 # ax2.imshow(apple2_trans, extent = loc1_coords)
 # recog
-# ax3.imshow(apple2, extent = loc1_coords )
-# ax3.imshow(apple2, extent = loc2_coords )
-# ax3.imshow(apple2, extent = loc3_coords )
+ax3.imshow(apple2, extent = loc1_coords )
+ax3.imshow(apple2, extent = loc2_coords )
+ax3.imshow(apple2, extent = loc3_coords )
 
 x_stu=study['xstart']
 y_stu=study['ystart']
@@ -102,18 +102,18 @@ x_ref=refresh['xstart']
 y_ref=refresh['ystart']
 nrefpoints = len(y_ref)
 
-# x_rec=recog['xstart']
-# y_rec=recog['ystart']
-# nrecpoints = len(y_rec)
+x_rec=recog['xstart']
+y_rec=recog['ystart']
+nrecpoints = len(y_rec)
 
 # extra_points = nrefpoints - nstupoints
-x_stu = x_stu.append(x_stu)
-x_stu = x_stu.append(x_stu)
-y_stu = y_stu.append(y_stu)
-y_stu = y_stu.append(y_stu)
-print(nstupoints, nrefpoints)
+# x_stu = x_stu.append(x_stu)
+# x_stu = x_stu.append(x_stu)
+# y_stu = y_stu.append(y_stu)
+# y_stu = y_stu.append(y_stu)
+print(nstupoints, nrefpoints, nrecpoints)
 
-maxpoints = max([nstupoints, nrefpoints])
+maxpoints = max([nstupoints, nrefpoints, nrecpoints])
 
 l_stu, = ax1.plot([], [], 'w-', alpha=0.5)
 dot_stu, = ax1.plot([], [], 'wo', alpha=.5)
@@ -121,8 +121,8 @@ dot_stu, = ax1.plot([], [], 'wo', alpha=.5)
 l_ref, = ax2.plot([], [], 'w-', alpha=0.5)
 dot_ref, = ax2.plot([], [], 'wo', alpha=.5)
 
-# l_rec, = ax3.plot([], [], 'w-', alpha=0.5)
-# dot_rec, = ax3.plot([], [], 'wo', alpha=.5)
+l_rec, = ax3.plot([], [], 'w-', alpha=0.5)
+dot_rec, = ax3.plot([], [], 'wo', alpha=.5)
 
 def update_line(num, x,y, line, dot):
     i = num
@@ -132,13 +132,13 @@ def update_line(num, x,y, line, dot):
     dot.set_data(x[i-1:i], y[i-1:i])
     return line, dot,
 
-def update_lines(num, x_stu, y_stu, x_ref, y_ref, l_stu, dot_stu, l_ref, dot_ref ):
+def update_lines(num, x_stu, y_stu, x_ref, y_ref, x_rec, y_rec, l_stu, dot_stu, l_ref, dot_ref, l_rec, dot_rec ):
     a = update_line(num, x=x_stu, y=y_stu, line=l_stu, dot=dot_stu)
     b = update_line(num, x=x_ref, y=y_ref, line=l_ref, dot=dot_ref)
-    # c = update_line(num, x=x_rec, y=y_rec, line=l_rec, dot=dot_rec)
-    return a + b
+    c = update_line(num, x=x_rec, y=y_rec, line=l_rec, dot=dot_rec)
+    return a + b + c
 
 line_ani = animation.FuncAnimation(fig, update_lines, maxpoints,
-                                   fargs=(x_stu, y_stu, x_ref, y_ref, l_stu,
-                                          dot_stu, l_ref, dot_ref), interval=200, blit=True)
+                                   fargs=(x_stu, y_stu, x_ref, y_ref, x_rec, y_rec, l_stu,
+                                          dot_stu, l_ref, dot_ref, l_rec, dot_rec), interval=200, blit=True)
 line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.mp4', writer=writer)
