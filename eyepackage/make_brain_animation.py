@@ -7,15 +7,13 @@ import matplotlib.animation as animation
 
 
 # Set up formatting for the movie files
-Writer = animation.writers['ffmpeg']
-writer = Writer(fps=30, metadata=dict(artist='Me'), bitrate=1800)
+Writer = animation.writers['imagemagick']
+writer = Writer(fps=50, metadata=dict(artist='Me'), bitrate=1800)
 
 
 # load theta amplitude data here
-trial = 30
+trial = str(74)
 filestring = f'../data/theta_ev{trial}.csv'
-parts = filestring.split('_')
-reftrial = parts[1].split('.')[0]
 
 data = pd.read_csv(filestring)
 colmask = data.columns.str.contains('chan_3')
@@ -67,4 +65,4 @@ line_ani = animation.FuncAnimation(fig, update_lines, len(data),
                                    fargs=(x, ys, lines, dots), interval=1, blit=True)
 plt.tight_layout()
 plt.show()
-line_ani.save('../figs/theta_reftr'+reftrial+'.mp4', writer=writer)
+line_ani.save('../figs/theta_reftr'+trial+'50fps.gif', writer=writer)

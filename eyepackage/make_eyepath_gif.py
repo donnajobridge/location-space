@@ -7,7 +7,7 @@ import matplotlib.animation as animation
 from imageio import imread
 
 # Set up formatting for the movie files
-Writer = animation.writers['ffmpeg']
+Writer = animation.writers['imagemagick']
 writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=1800)
 
 
@@ -141,4 +141,4 @@ def update_lines(num, x_stu, y_stu, x_ref, y_ref, l_stu, dot_stu, l_ref, dot_ref
 line_ani = animation.FuncAnimation(fig, update_lines, maxpoints,
                                    fargs=(x_stu, y_stu, x_ref, y_ref, l_stu,
                                           dot_stu, l_ref, dot_ref), interval=200, blit=True)
-line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.mp4', writer=writer)
+line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.gif', writer=writer)
