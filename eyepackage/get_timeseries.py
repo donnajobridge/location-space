@@ -18,7 +18,7 @@ def make_timeseries(eyearray, condnum, phase):
             start = trialinfo['start']
             end = trialinfo['end']
             loc = trialinfo['startloc']
-            accuracy = (trialinfo['recog loc'] == 1)
+            accuracy = (trialinfo['recog loc'] == 2)
 
             alltimearray.iloc[start:end, trial] = loc
 

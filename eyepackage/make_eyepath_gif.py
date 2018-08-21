@@ -48,7 +48,7 @@ ax1.axes.get_yaxis().set_visible(False)
 
 ax2.set_xlim(0, 1920)
 ax2.set_ylim(0, 1080)
-ax2.set_title('Update', fontsize=20)
+ax2.set_title('New', fontsize=20)
 ax2.axes.get_xaxis().set_visible(False)
 ax2.axes.get_yaxis().set_visible(False)
 
