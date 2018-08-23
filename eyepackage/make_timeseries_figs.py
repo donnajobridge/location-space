@@ -19,5 +19,7 @@ def make_lineplot(array, loclist, locnames, colorlist, phase, trialtype):
         ax.set_xlim([0, 5000])
         ax.set_ylabel('Proportion of Viewing', fontsize=24)
     line=line.get_figure()
-    line.savefig('../figs/line' + trialtype + phase + '.png')
+    # line.savefig('../figs/line' + trialtype + phase + '.png')
+    line.savefig('../figs/line' + trialtype + phase + '.eps', format='eps', dpi=1000)
+
     plt.clf()

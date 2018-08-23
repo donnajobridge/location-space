@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from eyepackage.organize_eyebehave_for_figs import *
-from eyepackage.make_eyebehave_figs import *
+from organize_eyebehave_for_figs import *
+from make_eyebehave_figs import *
 
 def run_all_figs():
     sublist = ['ec105', 'ec106', 'ec107', 'ec108', 'ec109']
@@ -31,3 +31,5 @@ def run_all_figs():
     recog_prop_tidy = get_tidy_prop_recog(all_behave)
     behave_for_figs = edit_behave_variables(recog_prop_tidy)
     make_behave_figs(behave_for_figs)
+
+run_all_figs()

@@ -30,5 +30,5 @@ for sub in sublist:
 
 colorlist = ['darkorchid', 'mediumspringgreen', 'darkturquoise']
 
-make_lineplot(corprops, loclist, locnames, colorlist, phase, 'update')
+make_lineplot(corprops, loclist, locnames, colorlist, phase, 'stability')
 make_lineplot(allprops, loclist, locnames, colorlist, phase, 'all')

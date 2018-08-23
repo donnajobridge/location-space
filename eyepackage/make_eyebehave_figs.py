@@ -45,7 +45,7 @@ def make_ave_eye_figs(fix_for_figs, phase):
                 ax.set_ylabel('Mean ' + measure, fontsize=20)
                 plt.title(measure, fontsize=30)
                 fig=ax.get_figure()
-                fig.savefig('figs/ls_fix_'+fig_type+phase+cond+measure+'.png')
+                fig.savefig('../figs/ls_fix_'+fig_type+phase+cond+measure+'.png')
                 plt.clf()
 
 
@@ -77,5 +77,5 @@ def make_behave_figs(behave_for_figs):
         ax.set_ylabel('Proportion of Responses', fontsize=20)
         plt.title('Recognition Performance', fontsize=30)
         fig=ax.get_figure()
-        fig.savefig('figs/ls_behave_'+fig_type+'_.png')
+        fig.savefig('../figs/ls_behave_'+fig_type+'.eps', format='eps', dpi=1000)
         plt.clf()

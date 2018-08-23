@@ -7,7 +7,7 @@ import numpy as np
 def read_eye_data(sublist, phase):
     all=pd.DataFrame()
     for sub in sublist:
-        file='data/' + sub + phase + 'eyebehave.csv'
+        file='../data/' + sub + phase + 'eyebehave.csv'
         print(file)
         eye=pd.read_csv(file, index_col=0)
         all=pd.concat([all,eye])
@@ -52,7 +52,7 @@ def get_tidy_fix_sub(roi_fix_tidy):
 def read_behave_data(sublist):
     all_behave=pd.DataFrame()
     for sub in sublist:
-        file='data/' + sub + 'behave.csv'
+        file='../data/' + sub + 'behave.csv'
         behave=pd.read_csv(file, index_col=0)
         behave['sub']=sub
         all_behave=pd.concat([all_behave,behave])

@@ -7,13 +7,13 @@ import matplotlib.animation as animation
 from imageio import imread
 
 # Set up formatting for the movie files
-Writer = animation.writers['ffmpeg']
+Writer = animation.writers['imagemagick']
 writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=1800)
 
 
 sub='ec108'
 phases=['study', 'refresh', 'recog']
-ref_trial_num = 74
+ref_trial_num = 30
 
 df_dict={}
 for phase in phases:
@@ -42,19 +42,19 @@ ax3 = fig.add_subplot(1,3,3, aspect=1080/1920)
 
 ax1.set_xlim(0, 1920)
 ax1.set_ylim(0, 1080)
-ax1.set_title('Original', fontsize=20)
+ax1.set_title('Study', fontsize=20)
 ax1.axes.get_xaxis().set_visible(False)
 ax1.axes.get_yaxis().set_visible(False)
 
 ax2.set_xlim(0, 1920)
 ax2.set_ylim(0, 1080)
-ax2.set_title('Update', fontsize=20)
+ax2.set_title('Mismatch', fontsize=20)
 ax2.axes.get_xaxis().set_visible(False)
 ax2.axes.get_yaxis().set_visible(False)
 
 ax3.set_xlim(0, 1920)
 ax3.set_ylim(0, 1080)
-ax3.set_title('Final Test', fontsize=20)
+ax3.set_title('Recognition', fontsize=20)
 ax3.axes.get_xaxis().set_visible(False)
 ax3.axes.get_yaxis().set_visible(False)
 
@@ -141,4 +141,4 @@ def update_lines(num, x_stu, y_stu, x_ref, y_ref, x_rec, y_rec, l_stu, dot_stu, 
 line_ani = animation.FuncAnimation(fig, update_lines, maxpoints,
                                    fargs=(x_stu, y_stu, x_ref, y_ref, x_rec, y_rec, l_stu,
                                           dot_stu, l_ref, dot_ref, l_rec, dot_rec), interval=200, blit=True)
-line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.mp4', writer=writer)
+line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.gif', writer=writer)
