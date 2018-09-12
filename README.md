@@ -2,15 +2,39 @@
 Experiment from Eyes are the Window to the Brain (http://www.donnajobridge.com/eyes.html)
 
 *Step 1:*
-Create array linking eye movements & behavioral data for plotting overview of eye movements.
+Create individual subject arrays linking eye movements & behavioral data, and arrays with just behavioral data for plotting overview of eye movements and behavior.
 *How to run:*
 Go to the eyepackage directory. From there, run `python runEyeBehaveAnalysis.py`
 
 *Step 2:*
+Create the following figures of eye movement data and behavioral performance.
 
-The forgetting KDE plot shows the distance objects were placed from the original location at each test: Day 1, Day 2, and Day 3.
+Eye movements:
+The following graphs are created for each phase of the experiment: Study, Refresh, Recognition
 
-The updating KDE plot shows memory on the final Day 3 test. Distances with respect to the original location, the Day 1 test location, and the Day 2 test location are plotted.
+All figures are bar plots showing viewing behavior for the following locations: Original, Updated, New, and Background Screen. Bar plots are made separately for Match & Mismatch conditions.
+
+- average proportion of viewing each location
+- average fixation duration at each locations
+- average number of fixations to each location
+
+Behavior:
+One graph is created to show final recognition performance. A violin plot shows proportion of location selection responses on the final test for the Match & Mismatch conditions.
 
 *How to run:*
-To generate figures from behavioral data, go to terminal in cxtupdate directory. From there, run "python run_react.py"
+From the eyepackage directory, run `python run_figs.py`
+
+*Step 3:*
+Created line plot showing the proportion of viewing each object-location over the course of the 5-second trial. This plot is only created for the Refresh & Recognition phases. Line plots are created for Match & Mismatch conditions separately.
+
+For each phase, two line plots are Created
+- proportion of viewing each location across all trials
+- proportion of viewing each location for only those trials in which subjects selected the Original location on the final test (memory stability)
+
+*How to run:*
+From eyepackage directory, run `python run_timeseries.py`
+
+*Step 4:*
+Create gif of eye movements for one object across all three phases of the experiment: Study, Refresh, and Recognition. An apple is plotted as the object. Eye movements are shown for one subject (ec108). Any trial can be selected. Current selection is for Refresh trial 30 (Mismatch trial).
+
+*Coming soon
