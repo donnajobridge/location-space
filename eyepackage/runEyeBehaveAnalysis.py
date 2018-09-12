@@ -1,9 +1,9 @@
 from pathlib import *
 import numpy as np
 import pandas as pd
-from eyepackage.eye_parse import *
-from eyepackage.behave_parse import *
-from eyepackage.behave_eye_converge import *
+from eye_parse import *
+from behave_parse import *
+from behave_eye_converge import *
 
 def set_behavior_path(sub, behavestring):
     extra='recogarray.txt'
@@ -28,7 +28,6 @@ def get_all_eye_files(subids,eyestring,phase):
     phase_letter_dict={'study':'a', 'refresh':'b', 'recog':'c'}
     masternames=get_eye_files(subids,eyepath)
     phase_eye_files=masternames[masternames['phase_letter']==phase_letter_dict[phase]]
-    print(phase_eye_files)
     return phase_eye_files
 
 def load_data_for_subject(sub, phase_eye_files, phase, eyestring, behavestring, is_pres=True):
@@ -89,19 +88,19 @@ def preprocess_subject_dfs(sub,phase,eyearray,behavearray,timesarray):
 
     '''save subject specific file to csv'''
     # put that command in behave_eye_converge
-    fname='data/'+sub+phase+'eyebehave.csv'
+    fname='../data/'+sub+phase+'eyebehave.csv'
     subcleandf.to_csv(fname)
 
     if phase=='study':
         behavedf=behavearray.reset_index(drop=True)
-        bname='data/'+sub+'behave.csv'
+        bname='../data/'+sub+'behave.csv'
         behavedf.to_csv(bname)
 def run_all():
     # subids=["ec109"]
     subids=["ec105","ec106","ec107","ec108","ec109"]
     matlab_subs = ["ec105", "ec106"]
-    pathstring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.eye/'
-    behavestring='/Volumes/Voss_Lab/ECOG/ecog/locationspace/ecog.behave/'
+    pathstring='../raw_eye_data/'
+    behavestring='../raw_behave_data/'
 
 
     for phase in ['study', 'refresh', 'recog']:
@@ -114,3 +113,5 @@ def run_all():
             output=load_data_for_subject(sub, all_phase, phase, pathstring, behavestring, is_pres)
             preprocess_subject_dfs(sub, phase, *output)
             print(sub, 'is done!')
+
+run_all()

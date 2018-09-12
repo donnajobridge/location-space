@@ -38,7 +38,6 @@ def apply_adjust_pres_coords(behavearray):
 def read_times_file_pres(timespath):
     timecolnames=['global trial start','objonset','trialend']
     timesdf=pd.read_table(timespath,header=None, names=timecolnames, index_col=False)
-    print(timesdf.head())
     del timesdf['global trial start']
     return timesdf
 
@@ -51,9 +50,7 @@ def read_times_file_mat(timespath,phase):
         timecolnames=['tmp1', 'tmp2', 'objonset','tmp3', 'tmp4']
 
     timesdf=pd.read_table(timespath,header=None,names=timecolnames, index_col=False)
-    print(timesdf.head())
     tmp_cols=~timesdf.columns.str.contains('tmp')
-    print(tmp_cols)
     timesdf=timesdf[timesdf.columns[tmp_cols]]
     timesdf['trialend']=np.nan
     return timesdf

@@ -24,7 +24,6 @@ def get_eye_files(subids,eyepath):
     """ returns master dataframe including eye file name, block, phase, subid
     input list of subject strings, Path object pointing to eye files
     """
-    print(subids)
     substrings=[s+"*.asc" for s in subids]
     subinfo=[]
     for s in substrings:
@@ -33,7 +32,6 @@ def get_eye_files(subids,eyepath):
             subinfo.append(subdict)
 
     masterdf=pd.DataFrame(subinfo).sort_values(by=["subject","phase_letter","block"])
-    print(masterdf.head())
     masterdf=masterdf[["subject","phase_letter","block","fname"]]
     masterdf.index=range(len(masterdf))
     return masterdf
@@ -63,7 +61,6 @@ def parse_eye_line(eye_phase_sub,eyestring, phase):
     fnames=eye_phase_sub.fname
     subjects=eye_phase_sub.subject
     trialnum=0
-    print(eyestring)
     for block,fname,subject in zip(blocks,fnames,subjects):
         path_file=eyestring+fname
         startcount=0
@@ -84,7 +81,6 @@ def parse_eye_line(eye_phase_sub,eyestring, phase):
                     if phase=='study' and startcount==1:
                         continue
                     events.append(newline)
-            print(trialnum, block, startcount)
     return events
 
 def events_to_df(events):

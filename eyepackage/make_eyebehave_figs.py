@@ -35,7 +35,7 @@ def make_ave_eye_figs(fix_for_figs, phase):
         data = fix_for_figs[(fix_for_figs['phase']==phase) &
         (fix_for_figs['cond']==cond)]
         for measure in ['Number of Fixations', 'Fixation Duration', 'Proportion of Viewing']:
-            for fig_type, myplot in [('vio', sns.violinplot), ('bar', sns.barplot)]:
+            for fig_type, myplot in [('bar', sns.barplot)]:
                 ax=myplot(x='roi', y=measure, hue='Recognition Location',
                 data=data, palette="colorblind")
                 ax.set_xlabel('Region of Interest', fontsize=20)
@@ -47,7 +47,6 @@ def make_ave_eye_figs(fix_for_figs, phase):
                 fig=ax.get_figure()
                 fig.savefig('../figs/ls_fix_'+fig_type+phase+cond+measure+'.png')
                 plt.clf()
-
 
 
 def edit_behave_variables(recog_prop_tidy):
@@ -67,7 +66,7 @@ def edit_behave_variables(recog_prop_tidy):
     return recog_prop_tidy
 
 def make_behave_figs(behave_for_figs):
-    for fig_type, myplot in [('bar', sns.barplot), ('swarm', sns.swarmplot)]:
+    for fig_type, myplot in [('swarm', sns.swarmplot)]:
         ax=myplot(x='Location Selection', y='Proportion of Responses', hue='Condition',
         data=behave_for_figs, palette="colorblind")
         ax.set_xlabel('Location Selection', fontsize=20)
@@ -77,5 +76,5 @@ def make_behave_figs(behave_for_figs):
         ax.set_ylabel('Proportion of Responses', fontsize=20)
         plt.title('Recognition Performance', fontsize=30)
         fig=ax.get_figure()
-        fig.savefig('../figs/ls_behave_'+fig_type+'.eps', format='eps', dpi=1000)
+        fig.savefig('../figs/ls_behave_'+fig_type+'.png')
         plt.clf()
