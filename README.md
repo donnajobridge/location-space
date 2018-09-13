@@ -35,6 +35,13 @@ For each phase, two line plots are Created
 From eyepackage directory, run `python run_timeseries.py`
 
 *Step 4:*
-Create gif of eye movements for one object across all three phases of the experiment: Study, Refresh, and Recognition. An apple is plotted as the object. Eye movements are shown for one subject (ec108). Any trial can be selected. Current selection is for Refresh trial 30 (Mismatch trial).
+Create gif of eye movements for one object across all three phases of the experiment: Study, Refresh, and Recognition. An apple is always plotted as the object (for display purposes only). Eye movements are shown for one subject (ec108). Any trial can be selected. Current selection is for Refresh trial 30 and Refresh trial 74 (both Mismatch trials).
 
-*Coming soon
+*How to run:*
+From eyepackage directory, run `python make_eyepath_gif_3phases.py`
+
+*Step 5:*
+Create gif of iEEG data time-locked to fixation directed to Original object-location during Refresh. iEEG data has been filtered at 5 Hz to highlight the theta frequency (3-8 Hz). Two trials from one hippocampal electrode are included, Refresh trial 30 and Refresh trial 74 for subject ec108.
+
+*How to run:*
+From eyepackage directory, run `python make_brain_animation.py`
