@@ -7,10 +7,13 @@ import matplotlib.animation as animation
 from imageio import imread
 
 def make_eyepath_3_phases(sub, ref_trial_num):
-    # Set up formatting for the movie files
+    # for gif:
     Writer = animation.writers['imagemagick']
     writer = Writer(fps=5, metadata=dict(artist='Me'), bitrate=1800)
 
+    # mp4
+    # Writer = animation.writers['ffmpeg']
+    # writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
 
     phases=['study', 'refresh', 'recog']
 
@@ -141,6 +144,7 @@ def make_eyepath_3_phases(sub, ref_trial_num):
                                        fargs=(x_stu, y_stu, x_ref, y_ref, x_rec, y_rec, l_stu,
                                               dot_stu, l_ref, dot_ref, l_rec, dot_rec), interval=200, blit=True)
     line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.gif', writer=writer)
+    # line_ani.save('../figs/eyepath_reftr'+str(ref_trial_num)+sub+'.mp4', writer=writer)
 
 make_eyepath_3_phases('ec108', 30)
 make_eyepath_3_phases('ec108', 74)

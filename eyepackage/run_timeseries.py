@@ -7,6 +7,8 @@ from make_timeseries_figs import *
 sublist=['ec105', 'ec106', 'ec107', 'ec108', 'ec109']
 loclist = ['loc1start', 'loc2start', 'loc3start']
 locnames = ['Original', 'Updated', 'New']
+shortloclist = ['loc1start', 'loc2start']
+shortlocnames = ['Original', 'New']
 phaselist=['refresh','recog']
 condlist=["Mismatch", "Match"]
 condnums=[1,2]
@@ -32,6 +34,16 @@ for cond, condnum in zip(condlist,condnums):
             allprops = pd.concat([allprops, allprops_sub_down])
 
         colorlist = ['darkorchid', 'mediumspringgreen', 'darkturquoise']
+        shortcolorlist = ['mediumspringgreen', 'darkturquoise']
 
         make_lineplot(corprops, loclist, locnames, colorlist, phase, cond, 'Stability')
         make_lineplot(allprops, loclist, locnames, colorlist, phase, cond, 'All')
+        # if cond != 1:
+        #     break
+        # if phase != 'refresh':
+        #     break
+        # make_lineplot(corprops, shortloclist, shortlocnames, shortcolorlist, phase, "Mismatch", 'Memory')
+        corname='../data/cortrials'+phase+cond+'eyetimeseries.csv'
+        corprops.to_csv(corname)
+        allname='../data/alltrials'+phase+cond+'eyetimeseries.csv'
+        allprops.to_csv(allname)

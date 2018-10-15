@@ -13,13 +13,14 @@ def make_lineplot(array, loclist, locnames, colorlist, phase, cond, accuracy):
     for loc, label, color in zip(loclist, locnames, colorlist):
         line=sns.lineplot(data = array, x=array.index, y=loc, ax=ax,
         label=label, color=color)
-        ax.legend(fontsize=16)
+        ax.legend(fontsize=12)
         ax.set_xlabel('Time (ms)', fontsize=24)
         ax.tick_params(labelsize=16)
         ax.set_xlim([0, 5000])
         ax.set_ylabel('Proportion of Viewing', fontsize=24)
         phasecap = phase.capitalize()
         plt.title(cond + ' ' + phasecap + ' ' + accuracy, fontsize=30)
+        # plt.title("Time Course of Viewing", fontsize=30)
 
     line=line.get_figure()
     line.savefig('../figs/line' + cond + phase + accuracy + '.png')
